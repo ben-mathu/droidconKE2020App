@@ -2,6 +2,7 @@ plugins {
     id(BuildPlugins.dynamicFeature)
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
+    id(BuildPlugins.ktlintPlugin)
 }
 
 tasks.withType<Test> {
@@ -31,14 +32,16 @@ tasks.withType<Test> {
         info.events = debug.events
         info.exceptionFormat = debug.exceptionFormat
 
-        addTestListener(object : TestListener {
-            override fun beforeTest(p0: TestDescriptor?) = Unit
-            override fun beforeSuite(p0: TestDescriptor?) = Unit
-            override fun afterTest(desc: TestDescriptor, result: TestResult) = Unit
-            override fun afterSuite(desc: TestDescriptor, result: TestResult) {
-                printResults(desc, result)
+        addTestListener(
+            object : TestListener {
+                override fun beforeTest(p0: TestDescriptor?) = Unit
+                override fun beforeSuite(p0: TestDescriptor?) = Unit
+                override fun afterTest(desc: TestDescriptor, result: TestResult) = Unit
+                override fun afterSuite(desc: TestDescriptor, result: TestResult) {
+                    printResults(desc, result)
+                }
             }
-        })
+        )
     }
 }
 
@@ -46,11 +49,11 @@ fun printResults(desc: TestDescriptor, result: TestResult) {
     if (desc.parent != null) {
         val output = result.run {
             "Results: $resultType (" +
-                    "$testCount tests, " +
-                    "$successfulTestCount successes, " +
-                    "$failedTestCount failures, " +
-                    "$skippedTestCount skipped" +
-                    ")"
+                "$testCount tests, " +
+                "$successfulTestCount successes, " +
+                "$failedTestCount failures, " +
+                "$skippedTestCount skipped" +
+                ")"
         }
         val testResultLine = "|  $output  |"
         val repeatLength = testResultLine.length
@@ -68,11 +71,7 @@ android {
         minSdkVersion(AndroidSDK.min)
         targetSdkVersion(AndroidSDK.target)
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    viewBinding {
-        isEnabled = true
+        testInstrumentationRunner = "com.android254.droidconKE2020.test_utils.KoinRunner"
     }
 
     compileOptions {
@@ -83,24 +82,22 @@ android {
     (kotlinOptions as org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions).apply {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-
 }
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(project(":app"))
-
     implementation(Libraries.flexBox)
 
-    // Koin
-    implementation(Libraries.koinAndroid)
-    implementation(Libraries.koinExt)
-    implementation(Libraries.koinScope)
-    implementation(Libraries.koinViewModel)
+    debugImplementation(project(":app", "debugDependencies"))
 
-    //Test
-    testImplementation(TestLibraries.junit4)
-    testImplementation(project(":test-utils", "testDependencies"))
+    // Test
+    testImplementation(project(":app", "testDependencies"))
     androidTestImplementation(project(":app", "intTestDependencies"))
+}
 
+configurations.all {
+    resolutionStrategy {
+        force("org.objenesis:objenesis:2.6")
+    }
 }

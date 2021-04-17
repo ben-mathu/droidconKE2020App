@@ -2,6 +2,7 @@ plugins {
     id(BuildPlugins.androidLibrary)
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
+    id(BuildPlugins.ktlintPlugin)
 }
 
 android {
@@ -41,6 +42,7 @@ dependencies {
     implementation(project(":network"))
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(project(BuildModules.Libraries.Core))
     implementation(Libraries.kotlinStandardLibrary)
     implementation(Libraries.appCompat)
     implementation(Libraries.ktxCore)

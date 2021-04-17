@@ -42,16 +42,21 @@ class AboutFragment : Fragment(R.layout.fragment_about) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = OrganizerAdapter{
-            val organizerDetailsDirections = AboutFragmentDirections.actionAboutFragmentToOrganizerDetailsFragment()
+        val adapter = OrganizerAdapter {
+            val organizerDetailsDirections =
+                AboutFragmentDirections.actionAboutFragmentToOrganizerDetailsFragment()
             findNavController().navigate(organizerDetailsDirections)
         }
 
         binding.organizersList.adapter = adapter
+        binding.organizersList.suppressLayout(true)
         aboutViewModel.createDummyData() // TODO Remove use of dummy data
-        aboutViewModel.organizers.observe(viewLifecycleOwner, Observer {
-            adapter.updateData(it)
-        })
+        aboutViewModel.organizers.observe(
+            viewLifecycleOwner,
+            Observer {
+                adapter.updateData(it)
+            }
+        )
     }
 
     override fun onDestroyView() {

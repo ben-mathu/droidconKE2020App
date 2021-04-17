@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.android254.droidconKE2020.sessions.R
 import com.android254.droidconKE2020.sessions.databinding.FragmentSessionsBinding
@@ -32,22 +31,23 @@ internal class SessionsFragment : Fragment(R.layout.fragment_sessions) {
         _binding = FragmentSessionsBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         injectFeatures()
         super.onViewCreated(view, savedInstanceState)
         observeDaySessions()
         getDaySessions()
-        binding.filterLayout.setOnClickListener {
-            findNavController().navigate(SessionsFragmentDirections.actionSessionsFragmentToFilterBottomSheet())
-        }
     }
 
     private fun observeDaySessions() {
-        sessionsViewModel.daySessions.observe(viewLifecycleOwner, Observer { daySessions ->
-            if (daySessions.isNotEmpty()) {
-                setUpTabs(daySessions)
+        sessionsViewModel.daySessions.observe(
+            viewLifecycleOwner,
+            Observer { daySessions ->
+                if (daySessions.isNotEmpty()) {
+                    setUpTabs(daySessions)
+                }
             }
-        })
+        )
     }
 
     private fun getDaySessions() {
@@ -70,24 +70,26 @@ internal class SessionsFragment : Fragment(R.layout.fragment_sessions) {
             val tab = tabLayout.getTabAt(tabPosition)
             tab?.let {
                 tab.customView = null
-                tab.setCustomView(sessionsTabAdapter.getTabView(tabPosition))
+                tab.customView = sessionsTabAdapter.getTabView(tabPosition)
             }
         }
         tabLayout.getTabAt(0)?.customView = null
         tabLayout.getTabAt(0)?.customView = sessionsTabAdapter.getSelectedTabView(0)
-        viewPagerSessions.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-            override fun onPageSelected(position: Int) {
-                highlightTab(position)
-            }
+        viewPagerSessions.addOnPageChangeListener(
+            object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {}
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
 
-        })
+                override fun onPageSelected(position: Int) {
+                    highlightTab(position)
+                }
+            }
+        )
     }
 
     private fun highlightTab(position: Int) {
@@ -95,7 +97,7 @@ internal class SessionsFragment : Fragment(R.layout.fragment_sessions) {
             val tab = tabLayout.getTabAt(tabPosition)
             tab?.let {
                 tab.customView = null
-                tab.setCustomView(sessionsTabAdapter.getTabView(tabPosition))
+                tab.customView = sessionsTabAdapter.getTabView(tabPosition)
             }
         }
         val tab = tabLayout.getTabAt(position)
@@ -104,8 +106,6 @@ internal class SessionsFragment : Fragment(R.layout.fragment_sessions) {
             tab.customView = sessionsTabAdapter.getSelectedTabView(position)
         }
     }
-
-
 }
 
 private const val MIN_SCALE = 0.85f
@@ -138,8 +138,10 @@ class ZoomOutPageTransformer : ViewPager.PageTransformer {
                     scaleY = scaleFactor
 
                     // Fade the page relative to its size.
-                    alpha = (MIN_ALPHA +
-                            (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
+                    alpha = (
+                        MIN_ALPHA +
+                            (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA))
+                        )
                 }
                 else -> { // (1,+Infinity]
                     // This page is way off-screen to the right.

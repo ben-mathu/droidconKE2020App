@@ -2,6 +2,7 @@ plugins {
     id(BuildPlugins.dynamicFeature)
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
+    id(BuildPlugins.ktlintPlugin)
     id(BuildPlugins.kotlinKapt)
 }
 android {
@@ -11,15 +12,7 @@ android {
         minSdkVersion(AndroidSDK.min)
         targetSdkVersion(AndroidSDK.target)
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    viewBinding {
-        isEnabled = true
-    }
-
-    dataBinding {
-        isEnabled = true
+        testInstrumentationRunner = "com.android254.droidconKE2020.test_utils.KoinRunner"
     }
 
     compileOptions {
@@ -30,23 +23,22 @@ android {
     (kotlinOptions as org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions).apply {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-
 }
 
 dependencies {
-    implementation (fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation (project(":app"))
-    implementation (project(":core"))
-    implementation (Libraries.constraintLayout)
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation(project(":app"))
+    implementation(project(":core"))
+
+    debugImplementation(project(":app", "debugDependencies"))
 
     // Testing Libraries
-    testImplementation (project(":test-utils", "testDependencies"))
-    androidTestImplementation (project(":app", "intTestDependencies"))
-    debugImplementation (TestLibraries.fragment)
+    testImplementation(project(":app", "testDependencies"))
+    androidTestImplementation(project(":app", "intTestDependencies"))
+}
 
-    // Koin
-    implementation (Libraries.koinAndroid)
-    implementation (Libraries.koinExt)
-    implementation (Libraries.koinScope)
-    implementation (Libraries.koinViewModel)
+configurations.all {
+    resolutionStrategy {
+        force("org.objenesis:objenesis:2.6")
+    }
 }

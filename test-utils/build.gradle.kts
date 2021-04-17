@@ -1,7 +1,8 @@
 plugins {
-    id(BuildPlugins.androidApplication)
+    id(BuildPlugins.androidLibrary)
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
+    id(BuildPlugins.ktlintPlugin)
 }
 
 android {
@@ -9,7 +10,6 @@ android {
     buildToolsVersion("29.0.2")
 
     defaultConfig {
-        applicationId = "com.android254.droidconKE2020"
         minSdkVersion(AndroidSDK.min)
         targetSdkVersion(AndroidSDK.target)
         versionCode = Versions.code
@@ -17,20 +17,28 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
-
-}
-
-val testDependencies by configurations.creating {
-    extendsFrom(configurations["testImplementation"])
 }
 
 dependencies {
-    implementation(Libraries.appCompat)
-    implementation(Libraries.materialComponents)
+    implementation(Libraries.koinAndroid)
+    implementation(Libraries.koinExt)
+    implementation(Libraries.koinScope)
+    implementation(Libraries.koinViewModel)
 
-    testImplementation(TestLibraries.junit4)
-    testImplementation(TestLibraries.mockk)
-    testImplementation(TestLibraries.archCore)
-    testImplementation(TestLibraries.core)
-    testImplementation(TestLibraries.koin)
+    api(TestLibraries.junit4)
+    api(TestLibraries.mockk)
+    api(TestLibraries.archCore)
+    api(TestLibraries.core)
+    api(TestLibraries.koin)
+    api(TestLibraries.testRules)
+    api(TestLibraries.kakao)
+    api(TestLibraries.testRunner)
+    api(TestLibraries.espresso)
+    api(TestLibraries.annotation)
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("org.objenesis:objenesis:2.6")
+    }
 }

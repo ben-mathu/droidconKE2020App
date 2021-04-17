@@ -2,7 +2,6 @@ package com.android254.droidconKE2020
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
@@ -10,7 +9,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.android254.droidconKE2020.core.Preferences
-import kotlinx.android.synthetic.main.content_home.*
+import kotlinx.android.synthetic.main.activity_home.*
 import org.koin.android.ext.android.inject
 
 class HomeActivity : AppCompatActivity() {
@@ -21,7 +20,6 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -33,18 +31,17 @@ class HomeActivity : AppCompatActivity() {
             feedback()
         }
         toolbar.nightModeHandler = {
-            Toast.makeText(applicationContext,"Night",Toast.LENGTH_SHORT).show()
             toggleDarkTheme()
         }
     }
 
-    //Set up bottom navigation
+    // Set up bottom navigation
     private fun setUpBottomNavigation() {
-        //Retrieve fragment container view as nav host fragment
+        // Retrieve fragment container view as nav host fragment
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.findNavController()
-        //Setup bottom navigation view with nav controller for dynamic navigation
+        // Setup bottom navigation view with nav controller for dynamic navigation
         bottomNavigation.setupWithNavController(navController = navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             toolbar.onDestinationChanged(destination.id, destination.label as String)

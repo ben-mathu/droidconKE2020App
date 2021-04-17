@@ -10,9 +10,11 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.android254.droidconKE2020.core.Preferences
 import com.google.android.material.appbar.MaterialToolbar
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinApiExtension
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
+@KoinApiExtension
 class DynamicToolbar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -23,9 +25,9 @@ class DynamicToolbar @JvmOverloads constructor(
     var authHandler: (() -> Unit)? = null
     var feedbackHandler: (() -> Unit)? = null
     var nightModeHandler: (() -> Unit)? = null
-    var sessionsHandler :(() -> Unit)? = null
+    var sessionsHandler: (() -> Unit)? = null
 
-    fun onDestinationChanged(destination: Int, destinationName : String) {
+    fun onDestinationChanged(destination: Int, destinationName: String) {
         when (destination) {
             R.id.homeFragment, R.id.authDialog -> setHomeToolbar()
             R.id.feedFragment -> setFeedToolbar()
@@ -52,11 +54,10 @@ class DynamicToolbar @JvmOverloads constructor(
             }
             addView(view)
         } else {
-            val view = LayoutInflater.from(context).inflate(R.layout.home_signed_out_toolbar, this, false)
+            val view = getView(R.layout.home_signed_out_toolbar)
             val droidconIcon = view.findViewById<ImageView>(R.id.imgToolbarLogo)
             droidconIcon.setOnClickListener {
                 nightModeHandler?.invoke()
-                true
             }
             addView(view)
         }
@@ -75,5 +76,4 @@ class DynamicToolbar @JvmOverloads constructor(
         }
         return view
     }
-
 }

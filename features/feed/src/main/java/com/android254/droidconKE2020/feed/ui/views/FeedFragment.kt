@@ -20,7 +20,6 @@ val navController: (fragment: Fragment) -> NavController = {
     NavHostFragment.findNavController(it)
 }
 
-
 class FeedFragment : Fragment() {
 
     private val viewModel: FeedViewModel by viewModel()
@@ -34,9 +33,7 @@ class FeedFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_feed, container, false)
-    }
+    ): View? = inflater.inflate(R.layout.fragment_feed, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,8 +45,11 @@ class FeedFragment : Fragment() {
         }
         val adapter = FeedAdapter(onSharedClicked)
         binding.feedsList.adapter = adapter
-        viewModel.feeds.observe(viewLifecycleOwner, Observer {
-            adapter.updateData(it)
-        })
+        viewModel.feeds.observe(
+            viewLifecycleOwner,
+            Observer {
+                adapter.updateData(it)
+            }
+        )
     }
 }
